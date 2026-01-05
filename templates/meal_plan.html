@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Weekly Meal Plan</h2>
+<p>Select recipes for each meal of the week</p>
+
+<div class="table-container">
+    <table>
+        <tr>
+            <th>Day</th>
+            {% for meal in meals %}
+            <th>{{ meal|capitalize }}</th>
+            {% endfor %}
+        </tr>
+
+        {% for day_index, day_name in days %}
+        <tr>
+            <td class="day-cell">{{ day_name }}</td>
+            {% for meal in meals %}
+            <td>
+                <select onchange="setMeal({{ day_index }}, '{{ meal }}', this.value)">
+                    <option value="">---</option>
+                    {% for r in recipes %}
+                    <option value="{{ r.id }}"
+                    {% if plan.get((day_index, meal)) == r.id %}selected{% endif %}
+                    >
+                        {{ r.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

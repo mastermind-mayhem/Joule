@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Grocery List</h2>
+<p>Shopping list generated from your weekly meal plan</p>
+
+{% if grocery %}
+<div class="grocery-list">
+    {% for item, qtys in grocery.items()|sort %}
+    <div class="grocery-item">
+        <span class="item-name">{{ item }}</span>
+        <span class="item-quantities">{{ qtys | join(", ") }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No meals planned yet. Add recipes to your meal plan to generate a grocery list.</p>
+    <button onclick="navigate('/meal-plan')" class="btn">Go to Meal Plan</button>
+</div>
+{% endif %}
+
+{% endblock %}

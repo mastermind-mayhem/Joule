@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joule - Weekly Meal Plan</title>
+    <link rel="stylesheet" type="text/css" href="./static/css/styles.css">    
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <script src="{{ url_for('static', filename='./js/main.js') }}" defer></script>
+</head>
+<body>
+
+<!-- <nav>
+    <div class="nav-icon">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Meal Planner Logo">
+    </div>
+    <div class="nav-buttons">
+        <button class="btn" onclick="navigate('/')">Home</button>
+        <button class="btn" onclick="navigate('/recipes')">Recipes</button>
+        <button class="btn" onclick="navigate('/meal-plan')">Meal Plan</button>
+        <button class="btn" onclick="navigate('/grocery-list')">Grocery List</button>
+    </div>
+</nav> -->
+<nav>
+    <div class="nav-content">
+        <div class="logo-container" onclick="location.href='/';" style="cursor: pointer;">
+            <img src="./static/images/logo.png" alt="Joule Logo">
+            <div class="logo-text">Joule</div>
+        </div>
+        <div class="nav-links">
+            <a href="/recipes">Recipes</a>
+            <a href="/meal-plan">Planner</a>
+            <a href="/grocery-list">Grocery List</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

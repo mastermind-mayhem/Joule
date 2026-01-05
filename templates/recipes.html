@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Recipes</h2>
+<p>Browse and manage your recipe collection</p>
+
+<div class="recipe-form">
+    <h3>Add New Recipe</h3>
+    <input type="text" id="recipe-name" placeholder="Recipe Name">
+    <textarea id="recipe-ingredients" placeholder="Ingredients (one per line: item, quantity)&#10;Example:&#10;eggs, 3&#10;butter, 1 tbsp"></textarea>
+    <textarea id="recipe-instructions" placeholder="Cooking Instructions"></textarea>
+    <button onclick="addRecipe()" class="btn">Add Recipe</button>
+</div>
+
+<div class="recipes-list">
+    {% for r in recipes %}
+    <div class="recipe-card">
+        <h3>{{ r.name }}</h3>
+        <div class="recipe-section">
+            <h4>Ingredients:</h4>
+            <ul class="ingredients-list">
+                {% for ing in r.ingredients %}
+                <li>{{ ing.item }} — {{ ing.quantity }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="recipe-section">
+            <h4>Instructions:</h4>
+            <p class="recipe-instructions">{{ r.instructions }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
