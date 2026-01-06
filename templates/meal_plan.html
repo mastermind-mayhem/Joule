@@ -18,7 +18,7 @@
             {% for meal in meals %}
             <td>
                 <select onchange="setMeal({{ day_index }}, '{{ meal }}', this.value)">
-                    <option value="">---</option>
+                    <option value=""></option>
                     {% for r in recipes %}
                     <option value="{{ r.id }}"
                     {% if plan.get((day_index, meal)) == r.id %}selected{% endif %}

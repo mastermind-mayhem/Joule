@@ -6,6 +6,7 @@
     <title>Joule - Weekly Meal Planner</title>
     <link rel="stylesheet" type="text/css" href="./static/css/styles.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <script src="{{ url_for('static', filename='./js/main.js') }}" defer></script>
 </head>
 <body>
 
@@ -15,7 +16,12 @@
             <img src="./static/images/logo.png" alt="Joule Logo">
             <div class="logo-text">Joule</div>
         </div>
-        <div class="nav-links">
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links" id="navLinks">
             <a href="/recipes">Recipes</a>
             <a href="/meal-plan">Planner</a>
             <a href="/grocery-list">Grocery List</a>

@@ -2,9 +2,11 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import sqlite3
 from contextlib import closing
+import os
 
 app = Flask(__name__)
-app.config['DATABASE'] = './data/meal_planner.db'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app.config['DATABASE'] = os.path.join(BASE_DIR, 'data', 'meal_planner.db')
 
 def get_db():
     conn = sqlite3.connect(app.config['DATABASE'])
@@ -14,18 +16,18 @@ def get_db():
 def init_db():
     with closing(get_db()) as db:
         # remove the script to refresh the database when implemented
+        # DROP TABLE IF EXISTS recipes;
+        # DROP TABLE IF EXISTS ingredients;
+        # DROP TABLE IF EXISTS meal_plan;
         db.executescript('''
-            DROP TABLE IF EXISTS recipes;
-            DROP TABLE IF EXISTS ingredients;
-            DROP TABLE IF EXISTS meal_plan;
-            
-            CREATE TABLE recipes (
+
+            CREATE TABLE IF NOT EXISTS recipes (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 instructions TEXT NOT NULL
             );
             
-            CREATE TABLE ingredients (
+            CREATE TABLE IF NOT EXISTS  ingredients (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 recipe_id INTEGER NOT NULL,
                 item TEXT NOT NULL,
@@ -33,7 +35,7 @@ def init_db():
                 FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
             );
             
-            CREATE TABLE meal_plan (
+            CREATE TABLE IF NOT EXISTS  meal_plan (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 day_index INTEGER NOT NULL,
                 meal TEXT NOT NULL,
@@ -42,24 +44,6 @@ def init_db():
                 FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
             );
         ''')
-        
-        # Insert sample recipes
-        sample_recipes = [
-            ('Caesar Salad', 'Wash and chop romaine lettuce. Toss with Caesar dressing. Top with grated parmesan and croutons. Serve immediately.',
-             [('romaine lettuce', '1 head'), ('caesar dressing', '1/2 cup'), ('parmesan cheese', '1/4 cup'), ('croutons', '1 cup')]),
-            ('Spaghetti Bolognese', 'Cook spaghetti according to package directions. Brown ground beef in large pan. Add tomato sauce, herbs, and simmer 20 minutes. Serve sauce over pasta.',
-             [('spaghetti', '400g'), ('ground beef', '500g'), ('tomato sauce', '2 cups'), ('onion', '1'), ('italian herbs', '2 tsp')]),
-            ('Oatmeal', 'Bring water to boil. Add oats and reduce heat. Simmer 5 minutes, stirring occasionally. Top with honey and berries.',
-             [('oats', '1 cup'), ('water', '2 cups'), ('honey', '1 tbsp'), ('mixed berries', '1/2 cup')]),
-            ('Turkey Sandwich', 'Toast bread if desired. Layer turkey, cheese, lettuce, and tomato. Spread mayo on bread. Assemble sandwich.',
-             [('bread', '2 slices'), ('turkey', '4 slices'), ('cheese', '2 slices'), ('lettuce', '2 leaves'), ('tomato', '2 slices'), ('mayonnaise', '1 tbsp')])
-        ]
-        
-        for name, instructions, ingredients in sample_recipes:
-            cursor = db.execute('INSERT INTO recipes (name, instructions) VALUES (?, ?)', (name, instructions))
-            recipe_id = cursor.lastrowid
-            for item, qty in ingredients:
-                db.execute('INSERT INTO ingredients (recipe_id, item, quantity) VALUES (?, ?, ?)', (recipe_id, item, qty))
         
         db.commit()
 
@@ -160,6 +144,14 @@ def add_recipe():
         db.commit()
     
     return jsonify({'success': True, 'recipe_id': recipe_id})
+
+@app.route('/api/delete-recipe/<int:recipe_id>', methods=['DELETE'])
+def delete_recipe(recipe_id):
+    with closing(get_db()) as db:
+        db.execute('DELETE FROM recipes WHERE id = ?', (recipe_id,))
+        db.commit()
+    
+    return jsonify({'success': True})
 
 if __name__ == '__main__':
     init_db()

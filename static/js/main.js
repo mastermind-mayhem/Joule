@@ -70,3 +70,25 @@ async function addRecipe() {
         alert('Failed to add recipe. Please try again.');
     }
 }
+
+function toggleMenu() {
+    const navLinks = document.getElementById('navLinks');
+    navLinks.classList.toggle('active');
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(event) {
+    const nav = document.querySelector('.nav-content');
+    const navLinks = document.getElementById('navLinks');
+    
+    if (navLinks && !nav.contains(event.target)) {
+        navLinks.classList.remove('active');
+    }
+});
+
+// Close menu when clicking a link
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', function() {
+        document.getElementById('navLinks').classList.remove('active');
+    });
+});
