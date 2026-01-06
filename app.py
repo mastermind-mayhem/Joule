@@ -87,21 +87,27 @@ def grocery_list():
     with closing(get_db()) as db:
         # Get all recipes in the meal plan
         plan_recipes = db.execute('''
-            SELECT DISTINCT recipe_id FROM meal_plan
+            SELECT recipe_id, COUNT(*) AS usage_count FROM meal_plan GROUP BY recipe_id
         ''').fetchall()
         
         grocery = {}
         for row in plan_recipes:
+            recipe_id = row['recipe_id']
+            usage_count = row['usage_count']
+            
             ingredients = db.execute('''
                 SELECT item, quantity FROM ingredients WHERE recipe_id = ?
-            ''', (row['recipe_id'],)).fetchall()
-            
+            ''', (recipe_id,)).fetchall()
+
             for ing in ingredients:
+                print(ing['item'], ing['quantity'])
                 item = ing['item']
                 qty = ing['quantity']
                 if item not in grocery:
                     grocery[item] = []
-                grocery[item].append(qty)
+                grocery[item].append(f"{qty} x {usage_count}")
+
+            print(grocery)
     
     return render_template('grocery.html', grocery=grocery)
 
